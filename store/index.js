@@ -1,8 +1,12 @@
 import firebase from '~/plugins/firebase'
 
+const db = firebase.firestore()
+const todoRef = db.collection('todos')
+
 export const state = () => ({
   userUid: '',
   userName: '',
+  todos: [],
 })
 
 export const mutations = {
@@ -11,6 +15,9 @@ export const mutations = {
   },
   setUserName(state, userName) {
     state.userName = userName
+  },
+  addTodo(state, todo) {
+    state.todos.push(todo)
   },
 }
 
@@ -31,6 +38,19 @@ export const actions = {
         console.log('error : ' + errorCode)
       })
   },
+  fetchTodos({ commit }) {
+    todoRef
+      .get()
+      .then((res) => {
+        res.forEach((doc) => {
+          console.log('success : ' + `${doc.id} => ${doc.data()}`)
+          commit('addTodo', doc.data())
+        })
+      })
+      .catch((error) => {
+        console.log('error : ' + error)
+      })
+  },
 }
 
 export const getters = {
@@ -39,5 +59,8 @@ export const getters = {
   },
   getUserName(state) {
     return state.userName
+  },
+  getTodos(state) {
+    return state.todos
   },
 }
