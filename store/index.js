@@ -19,6 +19,9 @@ export const mutations = {
   addTodo(state, todo) {
     state.todos.push(todo)
   },
+  clearTodo(state) {
+    state.todo = []
+  },
 }
 
 export const actions = {
@@ -49,6 +52,21 @@ export const actions = {
       })
       .catch((error) => {
         console.log('error : ' + error)
+      })
+  },
+  addTodo({ commit }, todo) {
+    console.log(todo)
+    todoRef
+      .add({
+        todo: todo.todo,
+        limit: todo.limit,
+      })
+      .then(function (docRef) {
+        console.log('Document written with ID: ', docRef.id)
+        commit('addTodo', todo)
+      })
+      .catch(function (error) {
+        console.error('Error adding document: ', error)
       })
   },
 }
